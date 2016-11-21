@@ -8,8 +8,8 @@ server.listen(process.env.PORT || 3000, function () {
     console.log('%s listening to %s', server.name, server.url);
 });
 
-var botAppId = "69881a10-bdde-4f0d-acdc-6ae138a2a450";
-var botAppKey = "wCNhtjvMe04CUBznY67tTfA";
+var botAppId = process.env.BOT_APP_ID;
+var botAppKey = process.env.BOT_APP_SECRET;
 
 // Create chat bot
 var connector = new builder.ChatConnector({
@@ -19,7 +19,47 @@ var connector = new builder.ChatConnector({
 var bot = new builder.UniversalBot(connector);
 server.post('/api/messages', connector.listen());
 
-// Create bot dialogs
-bot.dialog('/', function (session) {
-    session.send("Hello World");
-});
+server.get('/', restify.serveStatic({
+    directory: __dirname,
+    default: '/index.html'
+}));
+
+
+//=========================================================
+// Bots Dialogs
+//=========================================================
+
+var intents = new builder.IntentDialog();
+bot.dialog('/', intents);
+
+intents.matches(/^change name/i, [
+    function (session) {
+        session.beginDialog('/profile');
+    },
+    function (session, results) {
+        session.send('Ok... Changed your name to %s', session.userData.name);
+    }
+]);
+
+intents.onDefault([
+    function (session, args, next) {
+        if (!session.userData.name) {
+            session.beginDialog('/profile');
+        } else {
+            next();
+        }
+    },
+    function (session, results) {
+        session.send('Hello %s!', session.userData.name);
+    }
+]);
+
+bot.dialog('/profile', [
+    function (session) {
+        builder.Prompts.text(session, 'Hi! What is your name?');
+    },
+    function (session, results) {
+        session.userData.name = results.response;
+        session.endDialog();
+    }
+]);
