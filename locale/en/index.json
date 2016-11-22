@@ -1,0 +1,18 @@
+{
+    "greeting_guest" : "Hi, %s. I can help you all day.",
+    "greeting_user" : "Hi %s, %s. I can help you all day.",
+    "word_goodmorning" : "Good morning",
+    "word_goodafternoon" : "Good afternoon",
+    "word_goodevening" : "Good evening",
+    "word_goodnight" : "Good night",
+    "instructions_locale" : "To start, please choose what's your preferred language.",
+    "locale_prompt" : "What's your preferred language ?",
+    "locale_undefined" : "I'm sorry, we don't recognize your input. What's your preferred language ?",
+    "locale_changed" : "Great, Your preferred language is now English.",
+    "locale_stillsame" : "Your preferred language is still same using English.",
+    "ask_name" : "What is your name ?",
+    "welcome_userentered" : "Hello %s.",
+    "ask_anything" : "what can I help you ?",
+    "intent_undefined" : "I'm sorry I didn't understand, please retry.",
+    "intent_product_auto_confirm" : "Is it true you need %s insurance ?"
+}

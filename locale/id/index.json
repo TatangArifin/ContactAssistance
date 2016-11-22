@@ -1,0 +1,18 @@
+{
+    "greeting_guest" : "Hi, %s. Saya bisa membantu anda sepanjang hari.",
+    "greeting_user" : "Hi %s, %s. Saya bisa membantu anda sepanjang hari.",
+    "word_goodmorning" : "Selamat pagi",
+    "word_goodafternoon" : "Selamat siang",
+    "word_goodevening" : "Selamat sore",
+    "word_goodnight" : "Selamat malam",
+    "instructions_locale" : "Untuk memulai, silahkan pilih bahasa apa yang akan anda gunakan.",
+    "locale_prompt" : "Bahasa apa yang ingin anda gunakan ?",
+    "locale_undefined" : "Maaf, anda salah memilih bahasa. Silahkan pilih bahasa apa yang ingin anda gunakan ?",
+    "locale_changed" : "Terima kasih, bahasa yang digunakan sudah berganti menjadi Bahasa Indonesia",
+    "locale_stillsame" : "Terima kasih, bahasa yang digunakan tetap menjadi Bahasa Indonesia",
+    "ask_name" : "Maaf, dengan siapa saya berbicara ?",
+    "welcome_userentered" : "Hello %s.",
+    "ask_anything" : "Apakah ada yang bisa saya bantu ?",
+    "intent_undefined" : "Maaf, saya tidak mengerti, silahkan ulangi.",
+    "intent_product_auto_confirm" : "Apakah benar anda membutuhkan asuransi untuk %s anda ?"
+}
