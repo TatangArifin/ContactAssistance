@@ -33,6 +33,8 @@ server.get('/', restify.serveStatic({
     default: '/index.html'
 }));
 
+// App Vars
+var agentList = [];
 
 //=========================================================
 // Bots Dialogs
@@ -40,117 +42,65 @@ server.get('/', restify.serveStatic({
 
 bot.dialog('/', [
     function (session) {
-        session.userData.name = null;
-        session.userData.locale = null;
+        var address = JSON.stringify(session.message.address);
+        console.log(address);
+        session.send("Welcome to Contact Assistance Bot!");
+        session.send("Your address is " + address);
+        session.send("If you want become an CS Agent, please type CS_ON and to stop type CS_OFF. All the messages from users will be forwarded to you.");
+        session.beginDialog('/user');
+    }
+]);
 
-        var word = utils.getGreetingWord();
-        if (session.userData.name) {
-            session.send("greeting_user", session.userData.name, session.localizer.gettext(session.preferredLocale(), word));
-        } else {
-            session.send("greeting_guest", session.localizer.gettext(session.preferredLocale(), word));
-        }
-
-        if (!session.userData.locale) {
-            session.beginDialog('/localePicker');
-        } else if (!session.userData.name) {
-            session.beginDialog('/askname');
-        } else {
-            session.beginDialog('/askanything');
-        }
-    },
+bot.dialog('/user', [
     function (session) {
-        if (!session.userData.name) {
-            session.beginDialog('/askname');
-        } else {
-            session.beginDialog('/askanything');
-        }
+        builder.Prompts.text(session, "Type anything and I will send back to you.");
     },
     function (session, results) {
-        session.send("welcome_userentered", session.userData.name);
-        session.beginDialog('/askanything');
+        if (results.response.toUpperCase() === "CS_ON") {
+            agentList.push(session.message.address);
+            session.replaceDialog('/cs');
+        } else if (results.response.toUpperCase() === "CLR") {
+            agentList = [];
+        } else if (results.response.toUpperCase() === "LST") {
+            session.send("[LIST] : " + JSON.stringify(agentList));
+        } else if (agentList.length >= 1) {
+            var msg = new builder.Message()
+                .address(agentList[0])
+                .text(JSON.stringify(session.message.address) + "===" + results.response);
+            bot.send(msg, function (err) {
+                console.log("ERR FWD : " + err);
+            });
+        } else {
+            session.send("[USER] type : " + results.response);
+            session.replaceDialog('/user');
+        }
     }
 ]);
 
-bot.dialog('/askname', [
+bot.dialog('/cs', [
     function (session) {
-        builder.Prompts.text(session, "ask_name");
+        builder.Prompts.text(session, "Type anything and I will forward it.");
     },
     function (session, results) {
-        session.userData.name = utils.capitalizeWords(results.response);
-        session.endDialog();
-    }
-]);
-
-bot.dialog('/askanything', [
-    function (session) {
-        session.send("ask_anything");
-        session.beginDialog('/recognizeintent');
-    }
-]);
-
-var recognizer = new builder.LuisRecognizer(luisModel);
-var dialog = new builder.IntentDialog({ recognizers: [recognizer] });
-bot.dialog('/recognizeintent', dialog);
-
-dialog.matches('FindClaim', [
-    function (session, args, next) {
-        console.log(args);
-        session.send("Intent is FindClaim");
-    }
-]);
-
-dialog.matches('AskPolicy', [
-    function (session, args, next) {
-        console.log(args);
-        session.send("Intent is AskPolicy");
-    }
-]);
-
-dialog.matches('FindProduct', [
-    function (session, args, next) {
-        console.log(args);
-        if (args.entities.length <= 0 && args.entities) {
-            session.send("intent_undefined");
-            session.beginDialog('/askanything');
-            return;
+        if (results.response.toUpperCase() === "CS_OFF") {
+            agentList = [];
+            session.replaceDialog('/user');
+        } else if (results.response.toUpperCase() === "CLR") {
+            agentList = [];
+        } else if (results.response.toUpperCase() === "LST") {
+            session.send("[LIST] : " + JSON.stringify(agentList));
+        } else if (results.response.indexOf("===") >= 1) {
+            var destAddr = results.response.substring(0, results.response.indexOf("==="));
+            var destText = results.response.substring(results.response.indexOf("===") + 3, results.response.length);
+            var msg = new builder.Message()
+                .address(JSON.parse(destAddr))
+                .text(destText);
+            bot.send(msg, function (err) {
+                console.log("ERR REPLY : " + err);
+            });            
+        } else {
+            session.send("[CS] type : " + results.response);
+            session.replaceDialog('/cs');
         }
-        var intent = args.entities[0].intent;
-        var intentType = args.entities[0].type; 
-        session.send("Intent is FindProduct");
-    }
-]);
-
-dialog.onDefault([
-    function (session) {
-        session.send("intent_undefined");
-        session.beginDialog('/askanything');
-    }
-]);
-
-bot.dialog('/localePicker', [
-    function (session) {
-        session.send("instructions_locale");
-        builder.Prompts.choice(session, "locale_prompt", ["Bahasa", "English"], {
-            retryPrompt: "locale_undefined"
-        });
-    },
-    function (session, results) {
-        var locale = "";
-        switch (results.response.entity) {
-            case 'Bahasa':
-                locale = 'id';
-                break;
-            case 'English':
-                locale = 'en';
-                break;
-        }
-        session.preferredLocale(locale, function (err) {
-            if (!err) {
-                session.userData.locale = locale;
-                session.endDialog('locale_changed');
-            } else {
-                session.error(err);
-            }
-        });
     }
 ]);
