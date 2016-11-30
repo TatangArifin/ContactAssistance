@@ -5,6 +5,7 @@ var utils = require('./lib/utils');
 
 // App Vars
 var defaultLocale = "id";
+var startText = "#*START$#";
 var switchToPeerText = "#*PEER$#";
 
 // Setup Restify Server
@@ -50,12 +51,13 @@ bot.dialog('/askname', AskName.Dialog);
 bot.dialog('/', [
     function (session) {
         // For Test
-        session.userData.greeting = null;
-        session.userData.name = null;
-        session.userData.locale = null;
-        session.userData.intent = null;
+        //session.userData.greeting = null;
+        //session.userData.name = null;
+        //session.userData.locale = null;
+        //session.userData.intent = null;
 
         // Greetings
+        session.send(startText);
         if (!session.userData.greeting) {
             var word = utils.getGreetingWord();
             if (session.userData.name) {

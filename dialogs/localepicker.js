@@ -21,7 +21,11 @@ module.exports = {
                 }
             }
             if (index <= -1) {
-                session.send("locale_undefined");
+                //if (results.response.entity === "#*PEER$#") {
+                    //session.endDialogWithResult();
+                    //return;
+                //}
+                session.send("locale_undefined_selected");
                 next();
                 return;
             }
