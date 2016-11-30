@@ -14,6 +14,6 @@
     "greeting_userentered" : "Hello Bpk/Ibu %s.",
     "greeting_askanything" : ["Apakah ada yang bisa saya bantu ?", "Saya disini untuk membantu Anda, jika anda membutuhkan bantuan kirim pesan ke saya dan saya akan melakukan yang terbaik untuk anda"],
     "intent_undefined" : "Maaf, saya tidak mengerti, silahkan ulangi.",
-    "message_switchtopeer" : ["Mohon maaf, silahkan tunggu sebentar %s", "Tetap bersama saya %s, silahkan tunggu sebentar"],
+    "message_switchtopeer" : ["Silahkan tunggu sebentar %s", "Tetap bersama saya %s, silahkan tunggu sebentar"],
     "greeting_botname" : ["Anda bisa memanggil saya %s dan saya adalah %s anda", "Nama saya %s dan saya adalah %s anda"]
 }
