@@ -57,7 +57,7 @@ bot.dialog('/', [
         //session.userData.intent = null;
 
         // Greetings
-        session.send(startText);
+        //session.send(startText);
         if (!session.userData.greeting) {
             var word = utils.getGreetingWord();
             if (session.userData.name) {
