@@ -17,13 +17,16 @@
   },
   "homepage": "https://github.com/TatangArifin/ContactAssistance#readme",
   "dependencies": {
-    "botbuilder": "^3.4.4",
-    "restify": "^4.3.0",
+    "async": "^2.1.4",
+    "bluebird": "^3.4.6",
     "body-parser": "^1.9.0",
+    "botbuilder": "^3.4.4",
     "express": "^4.0.0",
     "jsonpath": "^0.2.0",
+    "mssql": "^3.3.0",
+    "restify": "^4.3.0",
     "swaggerize-express": "^3.0.0",
-    "swaggerize-ui": "^1.0.1"    
+    "swaggerize-ui": "^1.0.1"
   },
   "devDependencies": {
     "tape": "^3.0.0",
@@ -36,5 +39,5 @@
     "test": "tape test/*.js",
     "cover": "istanbul cover tape -- test/*.js",
     "lint": "jshint -c .jshintrc lib/**/*.js"
-  }  
+  }
 }

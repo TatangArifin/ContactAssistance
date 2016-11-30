@@ -1,0 +1,19 @@
+{
+    "word_goodmorning" : "Good morning",
+    "word_goodafternoon" : "Good afternoon",
+    "word_goodevening" : "Good evening",
+    "word_goodnight" : "Good night",
+    "greeting_guest" : ["Hi, %s. I can do this all day.", "Hello, %s. I can do this all day.", "%s, I can do this all day."],
+    "greeting_user" : ["Hi %s, %s. I can do this all day.", "%s %s! I can do all day.", "Hello %s, I can do this all day."],
+    "instructions_locale" : "To start, please select what's your preferred language.",
+    "locale_prompt" : "What's your preferred language ?",
+    "locale_undefined" : "I'm sorry, we don't recognize your input. What's your preferred language ?",
+    "locale_changed" : "Great, Your preferred language is now English.",
+    "locale_stillsame" : "Your preferred language is still same using English.",
+    "instructions_askname" : "Tell me what is your name ?",
+    "greeting_userentered" : "Hello %s.",
+    "greeting_askanything" : ["What can I help you ?", "I'm here to help you, anytime you need send me a meesage and I will do the best for you."],
+    "intent_undefined" : "I'm sorry I didn't understand, please retry.",
+    "message_switchtopeer" : ["Please wait for a moment %s", "Hold on %s"],
+    "greeting_botname" : ["You can call me %s, i'm your %s", "My name is %s and i'm your %s"]
+}

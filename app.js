@@ -3,6 +3,7 @@ var restify = require('restify');
 var builder = require('botbuilder');
 var utils = require('./lib/utils');
 
+// App Vars
 var defaultLocale = "id";
 
 // Setup Restify Server
@@ -13,7 +14,7 @@ server.listen(process.env.PORT || 3000, function () {
 
 var botAppId = process.env.BOT_APP_ID;
 var botAppKey = process.env.BOT_APP_SECRET;
-var luisModel = process.env.LUIS_MODEL_URL || "https://api.projectoxford.ai/luis/v2.0/apps/7039cf8e-0eff-47ed-b3b7-a3356d3003ac?subscription-key=51927ef9f4134e3698c421e9862b288a&verbose=true";
+var luisModel = process.env.LUIS_MODEL_URL
 
 // Create chat bot
 var connector = new builder.ChatConnector({
@@ -33,74 +34,109 @@ server.get('/', restify.serveStatic({
     default: '/index.html'
 }));
 
-// App Vars
-var agentList = [];
-
 //=========================================================
 // Bots Dialogs
 //=========================================================
 
+// Require Dialogs
+var LocalePicker = require('./dialogs/localepicker');
+var AskName = require('./dialogs/askname');
+
+// Register Dialogs
+bot.dialog('/localepicker', LocalePicker.Dialog);
+bot.dialog('/askname', AskName.Dialog);
+
 bot.dialog('/', [
     function (session) {
-        var address = JSON.stringify(session.message.address);
-        console.log(address);
-        session.send("Welcome to Contact Assistance Bot!");
-        session.send("Your address is " + address);
-        session.send("If you want become an CS Agent, please type CS_ON and to stop type CS_OFF. All the messages from users will be forwarded to you.");
-        session.beginDialog('/user');
+        // For Test
+        session.userData.greeting = null;
+        session.userData.name = null;
+        session.userData.locale = null;
+        session.userData.intent = null;
+
+        // Greetings
+        if (!session.userData.greeting) {
+            var word = utils.getGreetingWord();
+            if (session.userData.name) {
+                session.send("greeting_user", session.userData.name, session.localizer.gettext(session.preferredLocale(), word));
+            } else {
+                session.send("greeting_guest", session.localizer.gettext(session.preferredLocale(), word));
+            }
+            session.userData.greeting = true;
+        }
+        nextAction(session);
+    },
+    function (session, result) {
+        nextAction(session, result);
+    },
+    function (session, result) {
+        nextAction(session, result);
     }
 ]);
 
-bot.dialog('/user', [
+function nextAction(session, result) {
+    // Waterfall result of any (localepicker, askname)
+    if (!session.userData.locale) {
+        session.send("instructions_locale");
+        session.beginDialog('/localepicker');
+    } else if (!session.userData.name) {
+        session.beginDialog('/askname');
+    } else {
+        session.beginDialog('/askanything');
+    }
+}
+
+bot.dialog('/askanything', [
     function (session) {
-        builder.Prompts.text(session, "Type anything and I will send back to you.");
-    },
-    function (session, results) {
-        if (results.response.toUpperCase() === "CS_ON") {
-            agentList.push(session.message.address);
-            session.replaceDialog('/cs');
-        } else if (results.response.toUpperCase() === "CLR") {
-            agentList = [];
-        } else if (results.response.toUpperCase() === "LST") {
-            session.send("[LIST] : " + JSON.stringify(agentList));
-        } else if (agentList.length >= 1) {
-            var msg = new builder.Message()
-                .address(agentList[0])
-                .text(JSON.stringify(session.message.address) + "===" + results.response);
-            bot.send(msg, function (err) {
-                console.log("ERR FWD : " + err);
-            });
-        } else {
-            session.send("[USER] type : " + results.response);
-            session.replaceDialog('/user');
-        }
+        session.send("greeting_askanything");
+        session.beginDialog('/recognizeintent');
     }
 ]);
 
-bot.dialog('/cs', [
-    function (session) {
-        builder.Prompts.text(session, "Type anything and I will forward it.");
-    },
-    function (session, results) {
-        if (results.response.toUpperCase() === "CS_OFF") {
-            agentList = [];
-            session.replaceDialog('/user');
-        } else if (results.response.toUpperCase() === "CLR") {
-            agentList = [];
-        } else if (results.response.toUpperCase() === "LST") {
-            session.send("[LIST] : " + JSON.stringify(agentList));
-        } else if (results.response.indexOf("===") >= 1) {
-            var destAddr = results.response.substring(0, results.response.indexOf("==="));
-            var destText = results.response.substring(results.response.indexOf("===") + 3, results.response.length);
-            var msg = new builder.Message()
-                .address(JSON.parse(destAddr))
-                .text(destText);
-            bot.send(msg, function (err) {
-                console.log("ERR REPLY : " + err);
-            });            
-        } else {
-            session.send("[CS] type : " + results.response);
-            session.replaceDialog('/cs');
-        }
+var recognizer = new builder.LuisRecognizer(luisModel);
+var dialog = new builder.IntentDialog({ recognizers: [recognizer] });
+bot.dialog('/recognizeintent', dialog);
+
+dialog.matches('AskName', [
+    function (session, args, next) {
+        session.send("greeting_botname", process.env.BOT_NAME, process.env.BOT_TITLE);
+        session.beginDialog('/recognizeintent');
     }
 ]);
+
+dialog.matches('GeneralSupport', [
+    function (session, args, next) {
+        switchToPeer(session, args, next);
+    }
+]);
+
+dialog.matches('FindClaim', [
+    function (session, args, next) {
+        switchToPeer(session, args, next);
+    }
+]);
+
+dialog.matches('AskPolicy', [
+    function (session, args, next) {
+        switchToPeer(session, args, next);
+    }
+]);
+
+dialog.matches('FindProduct', [
+    function (session, args, next) {
+        switchToPeer(session, args, next);
+    }
+]);
+
+dialog.onDefault([
+    function (session) {
+        session.send("intent_undefined");
+        session.beginDialog('/askanything');
+    }
+]);
+
+function switchToPeer(session, args, next) {
+    // args : {"score":0.9544211,"intent":"FindClaim","intents":[{"intent":"FindClaim","score":0.9544211},{"intent":"AskPolicy","score":0.0218729619},{"intent":"None","score":0.0132386526},{"intent":"FindProduct","score":0.0116524026}],"entities":[]}
+    session.userData.intent = args;
+    session.send("message_switchtopeer", session.userData.name);
+}
