@@ -133,8 +133,13 @@ dialog.matches('FindProduct', [
 
 dialog.onDefault([
     function (session) {
-        session.send("intent_undefined");
-        session.beginDialog('/askanything');
+        if (!session.userData.locale || !session.userData.name) {
+            session.endDialogWithResult();
+        } else {
+            session.send("intent_undefined");
+            session.beginDialog('/askanything');
+        }
+
     }
 ]);
 
