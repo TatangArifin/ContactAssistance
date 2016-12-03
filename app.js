@@ -92,7 +92,7 @@ function nextAction(session, result) {
 bot.dialog('/askanything', [
     function (session) {
         if (!session.userData.locale || !session.userData.name) {
-            session.endDialogWithResult();
+            session.beginDialog('/');
         } else {
             session.send("greeting_askanything");
             session.beginDialog('/recognizeintent');
@@ -138,7 +138,7 @@ dialog.matches('FindProduct', [
 dialog.onDefault([
     function (session) {
         if (!session.userData.locale || !session.userData.name) {
-            session.endDialogWithResult();
+            session.beginDialog('/');
         } else {
             session.send("intent_undefined");
             session.beginDialog('/askanything');
@@ -149,7 +149,8 @@ dialog.onDefault([
 function switchToPeer(session, args, next) {
     // args : {"score":0.9544211,"intent":"FindClaim","intents":[{"intent":"FindClaim","score":0.9544211},{"intent":"AskPolicy","score":0.0218729619},{"intent":"None","score":0.0132386526},{"intent":"FindProduct","score":0.0116524026}],"entities":[]}
     if (!session.userData.locale || !session.userData.name) {
-        session.endDialogWithResult();
+        //session.endDialogWithResult();
+        session.beginDialog('/');
     } else {
         session.userData.intent = args;
         session.send(switchToPeerText);
