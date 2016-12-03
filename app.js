@@ -148,7 +148,11 @@ dialog.onDefault([
 
 function switchToPeer(session, args, next) {
     // args : {"score":0.9544211,"intent":"FindClaim","intents":[{"intent":"FindClaim","score":0.9544211},{"intent":"AskPolicy","score":0.0218729619},{"intent":"None","score":0.0132386526},{"intent":"FindProduct","score":0.0116524026}],"entities":[]}
-    session.userData.intent = args;
-    session.send(switchToPeerText);
-    session.send("message_switchtopeer", session.userData.name);
+    if (!session.userData.locale || !session.userData.name) {
+        session.endDialogWithResult();
+    } else {
+        session.userData.intent = args;
+        session.send(switchToPeerText);
+        session.send("message_switchtopeer", session.userData.name);
+    }
 }
