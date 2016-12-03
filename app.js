@@ -91,8 +91,12 @@ function nextAction(session, result) {
 
 bot.dialog('/askanything', [
     function (session) {
-        session.send("greeting_askanything");
-        session.beginDialog('/recognizeintent');
+        if (!session.userData.locale || !session.userData.name) {
+            session.endDialogWithResult();
+        } else {
+            session.send("greeting_askanything");
+            session.beginDialog('/recognizeintent');
+        }
     }
 ]);
 
@@ -139,7 +143,6 @@ dialog.onDefault([
             session.send("intent_undefined");
             session.beginDialog('/askanything');
         }
-
     }
 ]);
 
