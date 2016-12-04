@@ -23,6 +23,8 @@
     "botbuilder": "^3.4.4",
     "express": "^4.0.0",
     "jsonpath": "^0.2.0",
+    "moment": "^2.17.1",
+    "moment-timezone": "^0.5.10",
     "mssql": "^3.3.0",
     "restify": "^4.3.0",
     "swaggerize-express": "^3.0.0",

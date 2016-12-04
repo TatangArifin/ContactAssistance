@@ -59,7 +59,7 @@ bot.dialog('/', [
         // Greetings
         //session.send(startText);
         if (!session.userData.greeting) {
-            var word = utils.getGreetingWord();
+            var word = utils.getGreetingWord(session.userData.localdatetime);
             if (session.userData.name) {
                 session.send("greeting_user", session.userData.name, session.localizer.gettext(session.preferredLocale(), word));
             } else {
