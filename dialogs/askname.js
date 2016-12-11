@@ -4,6 +4,7 @@ var utils = require('../lib/utils');
 module.exports = {
     Id: "askname",
     Label: "AskName",
+    NextDialog: "",
     Dialog: [
         function (session) {
             builder.Prompts.text(session, "instructions_askname");

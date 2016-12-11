@@ -111,9 +111,15 @@ dialog.matches('AskName', [
     }
 ]);
 
-dialog.matches('GeneralSupport', [
+dialog.matches('ChangeLocale', [
     function (session, args, next) {
-        switchToPeer(session, args, next);
+        LocalePicker.NextDialog = "/askanything";
+        if (args.entities.length >= 1) {
+            var entity = args.entities[0].entity;
+            LocalePicker.changeLocale(session, entity);
+        } else {
+            session.beginDialog('/localepicker');
+        }
     }
 ]);
 
@@ -136,17 +142,19 @@ dialog.matches('FindProduct', [
 ]);
 
 dialog.onDefault([
-    function (session) {
+    function (session, args) {
         if (!session.userData.locale || !session.userData.name) {
             session.beginDialog('/');
         } else {
-            session.send("intent_undefined");
-            session.beginDialog('/askanything');
+            //session.send("intent_undefined");
+            //session.beginDialog('/askanything');
+            switchToPeer(session, args);
         }
     }
 ]);
 
 function switchToPeer(session, args, next) {
+    console.log(JSON.stringify(args));
     // args : {"score":0.9544211,"intent":"FindClaim","intents":[{"intent":"FindClaim","score":0.9544211},{"intent":"AskPolicy","score":0.0218729619},{"intent":"None","score":0.0132386526},{"intent":"FindProduct","score":0.0116524026}],"entities":[]}
     if (!session.userData.locale || !session.userData.name) {
         //session.endDialogWithResult();

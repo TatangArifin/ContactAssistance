@@ -6,6 +6,7 @@
     "greeting_guest" : ["Hi, %s. Saya bisa melakukan ini sepanjang hari.", "Hello, %s. Saya bisa melakukan ini sepanjang hari.", "%s, Saya bisa melakukan ini sepanjang hari."],
     "greeting_user" : ["Hi %s, %s. Saya bisa melakukan ini sepanjang hari.", "%s %s! Saya bisa melakukan ini sepanjang hari.", "Hello %s, Saya bisa melakukan ini sepanjang hari."],
     "instructions_locale" : "Untuk memulai, silahkan pilih bahasa apa yang akan anda gunakan.",
+    "instructions_changelocale" : "Silahkan pilih bahasa apa yang akan anda gunakan.",
     "locale_prompt" : "Bahasa apa yang ingin anda gunakan ?",
     "locale_undefined" : "Anda salah memilih bahasa. Silahkan pilih bahasa apa yang ingin anda gunakan ?",
     "locale_undefined_selected" : "Maaf, anda salah memilih bahasa. Silahkan pilih bahasa apa yang ingin anda gunakan ?",
